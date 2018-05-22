@@ -17,7 +17,7 @@ import org.mockito.Mockito
 @RunWith(JUnitPlatform::class)
 class SearchPresenterTest : Spek({
 
-    given("Search User") {
+    given("Search Presenter Testing") {
 
         val view = Mockito.mock(SearchView::class.java)
         val repository = Mockito.mock(UserRepository::class.java)
@@ -25,75 +25,36 @@ class SearchPresenterTest : Spek({
 
         val presenter = SearchPresenter(view, repository)
 
-        on("Show loading") {
-            val query = "kucing"
-
+        on("Get User Test") {
+            val query = "kucingdicoding"
             presenter.search(query)
 
-            it("loading") {
-                argumentCaptor<UserRepositoryCallback<SearchUserResponse>>().apply {
-                    verify(repository).doSearch(eq(query), capture())
-                    firstValue.onStart()
-                }
+            argumentCaptor<UserRepositoryCallback<SearchUserResponse>>().apply {
+                verify(repository).doSearch(eq(query), capture())
+                firstValue.onStart()
+                firstValue.onLoad(response)
+                firstValue.onEmpty()
+                firstValue.onError()
+                firstValue.onComplete()
+            }
 
+            it("Show loading") {
                 verify(view).onSearchLoading(true)
             }
-        }
 
-        on("success search user") {
-            val query = "alfianyusufabdullah"
-
-            presenter.search(query)
-
-            it("success search user") {
-                argumentCaptor<UserRepositoryCallback<SearchUserResponse>>().apply {
-                    verify(repository).doSearch(eq(query), capture())
-                    firstValue.onLoad(response)
-                }
-
+            it("Success search user") {
                 verify(view).onSearchLoaded(response.items)
             }
-        }
 
-        on("empty search user") {
-            val query = "kucingdicoding"
-
-            presenter.search(query)
-            it("empty") {
-                argumentCaptor<UserRepositoryCallback<SearchUserResponse>>().apply {
-                    verify(repository).doSearch(eq(query), capture())
-                    firstValue.onEmpty()
-                }
-
+            it("Empty Search User") {
                 verify(view).onSearchEmpty()
             }
-        }
 
-        on("error search user") {
-            val query = "kucingdicodingg"
-
-            presenter.search(query)
-            it("error") {
-                argumentCaptor<UserRepositoryCallback<SearchUserResponse>>().apply {
-                    verify(repository).doSearch(eq(query), capture())
-                    firstValue.onError()
-                }
-
+            it("Error Search User") {
                 verify(view).onSearchError()
             }
-        }
 
-        on("Hide loading") {
-            val query = "kucingg"
-
-            presenter.search(query)
-
-            it("loading") {
-                argumentCaptor<UserRepositoryCallback<SearchUserResponse>>().apply {
-                    verify(repository).doSearch(eq(query), capture())
-                    firstValue.onComplete()
-                }
-
+            it("Hide loading") {
                 verify(view).onSearchLoading(false)
             }
         }
