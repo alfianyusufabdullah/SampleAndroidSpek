@@ -11,7 +11,7 @@ import org.junit.runner.RunWith
 @RunWith(JUnitPlatform::class)
 class SampleTestSpek : Spek({
 
-    given("Calkulator") {
+    given("Calculator") {
         on("Multiply") {
             val result = 2 * 3
             it("result of multiply") {
